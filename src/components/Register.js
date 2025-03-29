@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "https://your-backend.onrender.com/api/auth"; // Update this
+const API_BASE_URL = "https://randomchat-backend-71yc.onrender.com/api/auth"; // Update this
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });

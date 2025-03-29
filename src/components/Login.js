@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "https://your-backend.onrender.com/api/auth"; // Update this
+const API_BASE_URL = "https://randomchat-backend-71yc.onrender.com//api/auth"; // Update this
 
 const Login = () => {
   const [email, setEmail] = useState("");
