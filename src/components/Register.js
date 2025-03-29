@@ -13,7 +13,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_BASE_URL}/register`, formData, { withCredentials: true });
+        await axios.post(`${API_BASE_URL}/register`, formData, { withCredentials: true });
       alert("Registration successful");
     } catch (error) {
       alert("Error: " + (error.response?.data?.msg || "Something went wrong"));
