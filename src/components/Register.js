@@ -2,56 +2,69 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "https://randomchat-backend-m8mt.onrender.com"; // Backend URL
+// ✅ Correct API base URL (ensure this matches your backend deployment)
+const API_BASE_URL = "https://randomchat-backend-m8mt.onrender.com/api/auth";
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
+  const [error, setError] = useState("");
+  const navigate = useNavigate(); // For navigation
+
+  // ✅ Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError(""); // Clear previous errors
 
     try {
-      const res = await axios.post(
-        `${API_BASE_URL}/register`,
-        formData,
-        { withCredentials: true } // Ensures cookies/auth headers are included
-      );
+      // ✅ Correct API endpoint for registration
+      const res = await axios.post(`${API_BASE_URL}/register`, formData, { 
+        withCredentials: true, // Allow cookies for authentication
+        headers: { "Content-Type": "application/json" }, // Ensure correct request headers
+      });
 
-      setSuccess("Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 2000); // Redirect to login after 2 seconds
+      // ✅ Store token & user info in localStorage
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.userId);
+      localStorage.setItem("email", res.data.email);
+
+      // ✅ Redirect to dashboard after successful registration
+      navigate("/dashboard");
     } catch (error) {
       if (error.response) {
-        setError(error.response.data.msg);
+        // API responded with an error (e.g., 400 Bad Request)
+        setError(error.response.data.msg || "Registration failed. Please try again.");
       } else if (error.request) {
+        // No response from server (CORS or server issue)
         setError("No response from server. Please check your backend.");
       } else {
+        // Other unexpected errors
         setError("An unexpected error occurred. Please try again.");
       }
-      console.error("Register Error:", error);
+      console.error("Registration Error:", error);
     }
   };
 
   return (
     <div className="register-container">
       <h2>Register</h2>
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
+      {error && <p className="error-message">{error}</p>} {/* Show error message if any */}
 
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
           <input
+            type="text"
             name="name"
-            placeholder="Name"
             value={formData.name}
             onChange={handleChange}
             required
@@ -61,9 +74,8 @@ const Register = () => {
         <div>
           <label>Email:</label>
           <input
-            name="email"
             type="email"
-            placeholder="Email"
+            name="email"
             value={formData.email}
             onChange={handleChange}
             required
@@ -73,9 +85,8 @@ const Register = () => {
         <div>
           <label>Password:</label>
           <input
-            name="password"
             type="password"
-            placeholder="Password"
+            name="password"
             value={formData.password}
             onChange={handleChange}
             required
